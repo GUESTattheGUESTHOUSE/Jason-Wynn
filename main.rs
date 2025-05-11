@@ -43,7 +43,11 @@ const CD_CMD: &str = "cd -verbose"; //reread manpage
             error_chain::bail!("Command executed with failing error code");
         } 
    
-        path_to_webserver_root = ;
+        path_to_webserver_root = for path_to_webserver_root.chars().rev() {
+                                    if _ != '/' {
+                                        _.remove(0)
+                                    }
+                                }
    /*still need to remove index at the end of the path to the docs then cd 
     so trim, but not doing a trim idk reverse search,
     invert string the and remove charaters until first '\'

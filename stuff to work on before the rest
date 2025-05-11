@@ -1,0 +1,14 @@
+fn main() {
+    let mut path_to_webserver_root = "/home/dir/is/path/to/root/index.html";
+    let len_to_pop: Vec<char> = path_to_webserver_root
+        .chars()
+        .rev()
+        .filter(|x| *x != '/')
+        .collect();
+        
+    path_to_webserver_root = for guy.iter() in 0..=len_to_pop.len() {
+        path_to_webserver_root.pop()
+    };
+    
+    println!("{}", path_to_webserver_root);
+}

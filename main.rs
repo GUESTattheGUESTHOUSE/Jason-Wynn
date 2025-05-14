@@ -1,19 +1,9 @@
 use std::fs::File;
+use std::path::PathBuf;
 use std::io::{Write, Error};
 use std::process::{Command, Stdio};
 
 fn main() {
-const RUSTUP_CMD: &str = "rustup";
-const RUSTUP_DOC_ARG: &str = "docs";
-const RUSTUP_PATH_ARG: &str = "--path";
-const CD_CMD: &str = "cd -verbose"; //reread manpage
-
-    fn spawn_python_webserver (docoption: &str) {
-        let mut path_to_webserver_root = Command::new(RUSTUPCMD)
-            .args(&[DOCARG, PATHARG])
-            .arg("--".push_str(docoption))//for now just take a &str later do enum match
-            //secound problem push_str may not be the best oh well
-            .output()?;
     /*
         enum docoptions {
             alloc,
@@ -38,28 +28,27 @@ const CD_CMD: &str = "cd -verbose"; //reread manpage
     */
     //future set toolchain as of now i just want the path to all the books and docs
 
+    fn get_clean_set_path (docoption: &str) {
+        const RUSTUP_CMD: &str = "rustup";
+        const RUSTUP_DOC_ARG: &str = "docs";
+        const RUSTUP_PATH_ARG: &str = "--path";
+        
+        let mut path_to_webserver_root = Command::new(RUSTUPCMD)
+            .args(&[DOCARG, PATHARG])
+            .arg("--".push_str(docoption))//for now just take a &str later do enum match
+            //secound problem push_str may not be the best oh well
+            .output()?;
+
         //execute a bash cmd and catch error
         if !path_to_webserver_root.status.success() {
             error_chain::bail!("Command executed with failing error code");
         } 
    
-        path_to_webserver_root = for path_to_webserver_root.chars().rev() {
-                                    if _ != '/' {
-                                        _.remove(0)
-                                    }
-                                }
-   /*still need to remove index at the end of the path to the docs then cd 
-    so trim, but not doing a trim idk reverse search,
-    invert string the and remove charaters until first '\'
-    */
-        let change_dir = Command::new(CD_CMD).arg(path_to_webserver_root); //change dir
+	let mut path_trimmed: PathBuf = path_to_webserver_root.into();
+	path_trimmed.pop();
+	println!("{}", path_to_webserver_root.to_string_lossy());
     
-        //execute a bash cmd and catch error
-        if !change_dir.status.success() {
-            error_chain::bail!("Command executed with failing error code");
-        } 
-    
-        let mut child = Command::new("python3 -m http.server -b 127.0.0.43 8080").stdin(Stdio::piped()) //same amount as what ever section i want
+        let mut child = Command::new("python3 -m http.server -b 127.0.0.43 8080 -d łtrimmed_pathł").stdin(Stdio::piped()) //same amount as what ever section i want
             .stderr(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()?;    
